@@ -1,15 +1,29 @@
+/*
+ * Copyright 2015 Bruno Romeu Nunes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package brnunes.swipeablecardview;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +47,24 @@ public class MainActivity extends ActionBarActivity {
             mItems.add(String.format("Card number %2d", i));
         }
 
-        mAdapter = new CardViewAdapter(mItems);
+        OnItemTouchListener itemTouchListener = new OnItemTouchListener() {
+            @Override
+            public void onCardViewTap(View view, int position) {
+                Toast.makeText(MainActivity.this, "Tapped " + mItems.get(position), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onButton1Click(View view, int position) {
+                Toast.makeText(MainActivity.this, "Clicked Button1 in " + mItems.get(position), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onButton2Click(View view, int position) {
+                Toast.makeText(MainActivity.this, "Clicked Button2 in " + mItems.get(position), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mAdapter = new CardViewAdapter(mItems, itemTouchListener);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -67,65 +98,49 @@ public class MainActivity extends ActionBarActivity {
                             }
                         });
 
-        RecyclerItemTouchListener itemTouchListener =
-                new RecyclerItemTouchListener(this, new OnItemTouchListener() {
-                    @Override
-                    public void onItemTouch(View view, int position) {
-                        Toast.makeText(MainActivity.this, "Clicked " + mItems.get(position), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
         mRecyclerView.addOnItemTouchListener(swipeTouchListener);
-        mRecyclerView.addOnItemTouchListener(itemTouchListener);
     }
 
     /**
-     * Interface for the item touch event
+     * Interface for the touch events in each item
      */
     public interface OnItemTouchListener {
-        public void onItemTouch(View view, int position);
+        /**
+         * Callback invoked when the user Taps one of the RecyclerView items
+         *
+         * @param view     the CardView touched
+         * @param position the index of the item touched in the RecyclerView
+         */
+        public void onCardViewTap(View view, int position);
+
+        /**
+         * Callback invoked when the Button1 of an item is touched
+         *
+         * @param view     the Button touched
+         * @param position the index of the item touched in the RecyclerView
+         */
+        public void onButton1Click(View view, int position);
+
+        /**
+         * Callback invoked when the Button2 of an item is touched
+         *
+         * @param view     the Button touched
+         * @param position the index of the item touched in the RecyclerView
+         */
+        public void onButton2Click(View view, int position);
     }
 
     /**
-     * The Listener for the item touch event
-     */
-    public class RecyclerItemTouchListener implements RecyclerView.OnItemTouchListener {
-        GestureDetector mGestureDetector;
-        private OnItemTouchListener mListener;
-
-        public RecyclerItemTouchListener(Context context, OnItemTouchListener listener) {
-            mListener = listener;
-            mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
-            View childView = view.findChildViewUnder(e.getX(), e.getY());
-            if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
-                mListener.onItemTouch(childView, view.getChildPosition(childView));
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
-        }
-    }
-
-    /**
-     * A simple adapter that loads a CardView layout with one TextView
+     * A simple adapter that loads a CardView layout with one TextView and two Buttons, and
+     * listens to clicks on the Buttons or on the CardView
      */
     public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHolder> {
         private List<String> cards;
+        private OnItemTouchListener onItemTouchListener;
 
-        public CardViewAdapter(List<String> cards) {
+        public CardViewAdapter(List<String> cards, OnItemTouchListener onItemTouchListener) {
             this.cards = cards;
+            this.onItemTouchListener = onItemTouchListener;
         }
 
         @Override
@@ -145,11 +160,36 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView title;
+            private TextView title;
+            private Button button1;
+            private Button button2;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 title = (TextView) itemView.findViewById(R.id.card_view_title);
+                button1 = (Button) itemView.findViewById(R.id.card_view_button1);
+                button2 = (Button) itemView.findViewById(R.id.card_view_button2);
+
+                button1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemTouchListener.onButton1Click(v, getPosition());
+                    }
+                });
+
+                button2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemTouchListener.onButton2Click(v, getPosition());
+                    }
+                });
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemTouchListener.onCardViewTap(v, getPosition());
+                    }
+                });
             }
         }
     }

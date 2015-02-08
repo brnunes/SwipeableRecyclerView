@@ -233,6 +233,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
                     ++mDismissAnimationRefCount;
+                    setEnabled(false);
                     mDownView.animate()
                             .translationX(dismissRight ? mViewWidth : -mViewWidth)
                             .alpha(0)
@@ -338,6 +339,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mRecyclerView.dispatchTouchEvent(cancelEvent);
 
                     mPendingDismisses.clear();
+                    setEnabled(true);
                 }
             }
         });

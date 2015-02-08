@@ -76,6 +76,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
     // Transient properties
     private List<PendingDismissData> mPendingDismisses = new ArrayList<>();
     private int mDismissAnimationRefCount = 0;
+    private float mAlpha;
     private float mDownX;
     private float mDownY;
     private boolean mSwiping;
@@ -168,6 +169,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                 }
 
                 if (mDownView != null) {
+                    mAlpha = mDownView.getAlpha();
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();
                     mDownPosition = mRecyclerView.getChildPosition(mDownView);
@@ -190,7 +192,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     // cancel
                     mDownView.animate()
                             .translationX(0)
-                            .alpha(1)
+                            .alpha(mAlpha)
                             .setDuration(mAnimationTime)
                             .setListener(null);
                 }
@@ -245,7 +247,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     // cancel
                     mDownView.animate()
                             .translationX(0)
-                            .alpha(1)
+                            .alpha(mAlpha)
                             .setDuration(mAnimationTime)
                             .setListener(null);
                 }
@@ -274,8 +276,8 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
 
                 if (mSwiping) {
                     mDownView.setTranslationX(deltaX - mSwipingSlop);
-                    mDownView.setAlpha(Math.max(0f, Math.min(1f,
-                            1f - Math.abs(deltaX) / mViewWidth)));
+                    mDownView.setAlpha(Math.max(0f, Math.min(mAlpha,
+                            mAlpha * (1f - Math.abs(deltaX) / mViewWidth))));
                     return true;
                 }
                 break;
@@ -322,7 +324,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     ViewGroup.LayoutParams lp;
                     for (PendingDismissData pendingDismiss : mPendingDismisses) {
                         // Reset view presentation
-                        pendingDismiss.view.setAlpha(1f);
+                        pendingDismiss.view.setAlpha(mAlpha);
                         pendingDismiss.view.setTranslationX(0);
                         lp = pendingDismiss.view.getLayoutParams();
                         lp.height = originalHeight;

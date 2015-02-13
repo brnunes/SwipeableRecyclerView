@@ -83,6 +83,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
     private int mSwipingSlop;
     private VelocityTracker mVelocityTracker;
     private int mDownPosition;
+    private int mAnimatingPosition = ListView.INVALID_POSITION;
     private View mDownView;
     private boolean mPaused;
     private float mFinalDelta;
@@ -228,11 +229,12 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     dismiss = (velocityX < 0) == (mFinalDelta < 0);
                     dismissRight = mVelocityTracker.getXVelocity() > 0;
                 }
-                if (dismiss && mDownPosition != ListView.INVALID_POSITION) {
+                if (dismiss && mDownPosition != mAnimatingPosition && mDownPosition != ListView.INVALID_POSITION) {
                     // dismiss
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
                     ++mDismissAnimationRefCount;
+                    mAnimatingPosition = mDownPosition;
                     mDownView.animate()
                             .translationX(dismissRight ? mViewWidth : -mViewWidth)
                             .alpha(0)
@@ -338,6 +340,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mRecyclerView.dispatchTouchEvent(cancelEvent);
 
                     mPendingDismisses.clear();
+                    mAnimatingPosition = ListView.INVALID_POSITION;
                 }
             }
         });

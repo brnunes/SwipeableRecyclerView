@@ -169,7 +169,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     }
                 }
 
-                if (mDownView != null) {
+                if (mDownView != null && mAnimatingPosition != mRecyclerView.getChildPosition(mDownView)) {
                     mAlpha = mDownView.getAlpha();
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();

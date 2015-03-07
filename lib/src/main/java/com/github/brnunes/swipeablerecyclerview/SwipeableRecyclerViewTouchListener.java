@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package brnunes.swipeablecardview;
+package com.github.brnunes.swipeablerecyclerview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

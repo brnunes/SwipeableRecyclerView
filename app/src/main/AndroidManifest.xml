@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="brnunes.swipeablecardview">
+    package="com.github.brnunes.swipeablecardview">
 
     <application
         android:allowBackup="true"

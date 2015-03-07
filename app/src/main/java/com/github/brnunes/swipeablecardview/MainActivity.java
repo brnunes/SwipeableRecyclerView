@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package brnunes.swipeablecardview;
+package com.github.brnunes.swipeablecardview;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;

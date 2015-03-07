@@ -32,7 +32,6 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-    private RecyclerView mRecyclerView;
     private CardViewAdapter mAdapter;
 
     private ArrayList<String> mItems;
@@ -44,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
 
         mItems = new ArrayList<>(30);
         for (int i = 0; i < 30; i++) {
-            mItems.add(String.format("Card number %2d", i));
+            mItems.add(String.format("Card number %02d", i));
         }
 
         OnItemTouchListener itemTouchListener = new OnItemTouchListener() {
@@ -66,13 +65,13 @@ public class MainActivity extends ActionBarActivity {
 
         mAdapter = new CardViewAdapter(mItems, itemTouchListener);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mAdapter);
 
         SwipeableRecyclerViewTouchListener swipeTouchListener =
-                new SwipeableRecyclerViewTouchListener(mRecyclerView,
+                new SwipeableRecyclerViewTouchListener(recyclerView,
                         new SwipeableRecyclerViewTouchListener.SwipeListener() {
                             @Override
                             public boolean canSwipe(int position) {
@@ -82,6 +81,7 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
+//                                    Toast.makeText(MainActivity.this, mItems.get(position) + " swiped left", Toast.LENGTH_SHORT).show();
                                     mItems.remove(position);
                                     mAdapter.notifyItemRemoved(position);
                                 }
@@ -91,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
+//                                    Toast.makeText(MainActivity.this, mItems.get(position) + " swiped right", Toast.LENGTH_SHORT).show();
                                     mItems.remove(position);
                                     mAdapter.notifyItemRemoved(position);
                                 }
@@ -98,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
                             }
                         });
 
-        mRecyclerView.addOnItemTouchListener(swipeTouchListener);
+        recyclerView.addOnItemTouchListener(swipeTouchListener);
     }
 
     /**

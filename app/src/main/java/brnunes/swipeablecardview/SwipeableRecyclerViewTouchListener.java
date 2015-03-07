@@ -295,6 +295,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
         // frame; in the future we may want to do something smarter and more performant.
 
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
+        final int originalLayoutParamsHeight = lp.height;
         final int originalHeight = dismissView.getHeight();
 
         ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(mAnimationTime);
@@ -329,7 +330,14 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                         pendingDismiss.view.setAlpha(mAlpha);
                         pendingDismiss.view.setTranslationX(0);
                         lp = pendingDismiss.view.getLayoutParams();
-                        lp.height = originalHeight;
+
+                        if (originalLayoutParamsHeight == ViewGroup.LayoutParams.MATCH_PARENT
+                                || originalLayoutParamsHeight == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                            lp.height = originalLayoutParamsHeight;
+                        } else {
+                            lp.height = originalHeight;
+                        }
+
                         pendingDismiss.view.setLayoutParams(lp);
                     }
 

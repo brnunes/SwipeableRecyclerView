@@ -23,34 +23,33 @@ Sample project implementation of a list of `CardView`s in a `RecyclerView` with 
 - Instantiate a `SwipeableRecyclerViewTouchListener` passing as parameters the `RecyclerView` and a `SwipeableRecyclerViewTouchListener.SwipeListener` that will receive the callbacks.
 - Add the instantiated `SwipeableRecyclerViewTouchListener` as a [`RecyclerView.OnItemTouchListener`](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.OnItemTouchListener.html).
 
-
-```java
-SwipeableRecyclerViewTouchListener swipeTouchListener =
-        new SwipeableRecyclerViewTouchListener(mRecyclerView,
-                new SwipeableRecyclerViewTouchListener.SwipeListener() {
-                    @Override
-                    public boolean canSwipe(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-                            mItems.remove(position);
-                            mAdapter.notifyItemRemoved(position);
+    ```java
+    SwipeableRecyclerViewTouchListener swipeTouchListener =
+            new SwipeableRecyclerViewTouchListener(mRecyclerView,
+                    new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                        @Override
+                        public boolean canSwipe(int position) {
+                            return true;
                         }
-                        mAdapter.notifyDataSetChanged();
-                    }
 
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-                            mItems.remove(position);
-                            mAdapter.notifyItemRemoved(position);
+                        @Override
+                        public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                            for (int position : reverseSortedPositions) {
+                                mItems.remove(position);
+                                mAdapter.notifyItemRemoved(position);
+                            }
+                            mAdapter.notifyDataSetChanged();
                         }
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
 
-mRecyclerView.addOnItemTouchListener(swipeTouchListener);
-````
+                        @Override
+                        public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                            for (int position : reverseSortedPositions) {
+                                mItems.remove(position);
+                                mAdapter.notifyItemRemoved(position);
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+    mRecyclerView.addOnItemTouchListener(swipeTouchListener);
+    ````

@@ -9,17 +9,20 @@ Sample project implementation of a list of `CardView`s in a `RecyclerView` with 
 
 ####How to use
 
-- Add these Gradle dependencies to your app's module. The `RecyclerView` and `CardView` widgets are part of the [v7 Support Libraries](https://developer.android.com/tools/support-library/features.html#v7).
+- Add these Gradle dependencies to your app's module:
 
     ````
     dependencies {
         ...
-        compile 'com.github.brnunes:swipeablerecyclerview:1.0.0-SNAPSHOT'
-        compile 'com.android.support:cardview-v7:21.0.+'
-        compile 'com.android.support:recyclerview-v7:21.0.+'
+        
+        // already includes 'com.android.support:recyclerview-v7:21.0.3'
+        compile 'com.github.brnunes:swipeablerecyclerview:1.0.0'
+
+        // only necessary if you are using CardView
+        compile 'com.android.support:cardview-v7:21.0.3'
     }
     ````
-
+The `RecyclerView` and `CardView` widgets are part of the [v7 Support Libraries](https://developer.android.com/tools/support-library/features.html#v7).
 - Instantiate a `SwipeableRecyclerViewTouchListener` passing as parameters the `RecyclerView` and a `SwipeableRecyclerViewTouchListener.SwipeListener` that will receive the callbacks.
 - Add the instantiated `SwipeableRecyclerViewTouchListener` as a [`RecyclerView.OnItemTouchListener`](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.OnItemTouchListener.html).
 

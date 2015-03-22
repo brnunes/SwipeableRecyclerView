@@ -16,7 +16,7 @@ Sample project implementation of a list of `CardView`s in a `RecyclerView` with 
         ...
         
         // already includes 'com.android.support:recyclerview-v7:21.0.3'
-        compile 'com.github.brnunes:swipeablerecyclerview:1.0.0'
+        compile 'com.github.brnunes:swipeablerecyclerview:1.0.1'
 
         // only necessary if you are using CardView
         compile 'com.android.support:cardview-v7:21.0.3'

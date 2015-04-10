@@ -88,6 +88,9 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
     private boolean mPaused;
     private float mFinalDelta;
 
+    private boolean mSwipingLeft;
+    private boolean mSwipingRight;
+
     /**
      * Constructs a new swipe touch listener for the given {@link android.support.v7.widget.RecyclerView}
      *
@@ -174,7 +177,9 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();
                     mDownPosition = mRecyclerView.getChildPosition(mDownView);
-                    if (mSwipeListener.canSwipe(mDownPosition)) {
+                    mSwipingLeft = mSwipeListener.canSwipeLeft(mDownPosition);
+                    mSwipingRight = mSwipeListener.canSwipeRight(mDownPosition);
+                    if (mSwipingLeft||mSwipingRight) {
                         mVelocityTracker = VelocityTracker.obtain();
                         mVelocityTracker.addMovement(motionEvent);
                     } else {
@@ -276,6 +281,11 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
                 }
 
+                if(deltaX<0 && !mSwipingRight)
+                    mSwiping = false;
+                if(deltaX>0 && !mSwipingLeft)
+                    mSwiping = false;
+
                 if (mSwiping) {
                     mDownView.setTranslationX(deltaX - mSwipingSlop);
                     mDownView.setAlpha(Math.max(0f, Math.min(mAlpha,
@@ -366,9 +376,14 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
      */
     public interface SwipeListener {
         /**
-         * Called to determine whether the given position can be swiped.
+         * Called to determine whether the given position can be swiped to the left.
          */
-        boolean canSwipe(int position);
+        boolean canSwipeLeft(int position);
+
+        /**
+         * Called to determine whether the given position can be swiped to the right.
+         */
+        boolean canSwipeRight(int position);
 
         /**
          * Called when the item has been dismissed by swiping to the left.

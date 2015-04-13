@@ -281,9 +281,9 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
                 }
 
-                if(deltaX<0 && !mSwipingRight)
+                if(deltaX<0 && !mSwipingLeft)
                     mSwiping = false;
-                if(deltaX>0 && !mSwipingLeft)
+                if(deltaX>0 && !mSwipingRight)
                     mSwiping = false;
 
                 if (mSwiping) {
@@ -325,9 +325,9 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     }
 
                     if (mFinalDelta > 0) {
-                        mSwipeListener.onDismissedBySwipeRight(mRecyclerView, dismissPositions);
-                    } else {
                         mSwipeListener.onDismissedBySwipeLeft(mRecyclerView, dismissPositions);
+                    } else {
+                        mSwipeListener.onDismissedBySwipeRight(mRecyclerView, dismissPositions);
                     }
 
                     // Reset mDownPosition to avoid MotionEvent.ACTION_UP trying to start a dismiss

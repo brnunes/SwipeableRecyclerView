@@ -144,6 +144,11 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
         handleTouchEvent(motionEvent);
     }
 
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
     private boolean handleTouchEvent(MotionEvent motionEvent) {
         if (mViewWidth < 2) {
             mViewWidth = mRecyclerView.getWidth();
@@ -281,9 +286,9 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
                 }
 
-                if(deltaX<0 && !mSwipingLeft)
+                if(deltaX < 0 && !mSwipingLeft)
                     mSwiping = false;
-                if(deltaX>0 && !mSwipingRight)
+                if(deltaX > 0 && !mSwipingRight)
                     mSwiping = false;
 
                 if (mSwiping) {
@@ -324,7 +329,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                         dismissPositions[i] = mPendingDismisses.get(i).position;
                     }
 
-                    if (mFinalDelta > 0) {
+                    if (mFinalDelta < 0) {
                         mSwipeListener.onDismissedBySwipeLeft(mRecyclerView, dismissPositions);
                     } else {
                         mSwipeListener.onDismissedBySwipeRight(mRecyclerView, dismissPositions);

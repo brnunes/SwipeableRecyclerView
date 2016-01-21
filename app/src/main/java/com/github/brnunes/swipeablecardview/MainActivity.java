@@ -76,8 +76,13 @@ public class MainActivity extends ActionBarActivity {
                 new SwipeableRecyclerViewTouchListener(recyclerView,
                         new SwipeableRecyclerViewTouchListener.SwipeListener() {
                             @Override
-                            public boolean canSwipe(int position) {
-                                return true;
+                            public boolean canSwipeLeft(int position) {
+                                return position % 2 == 1;
+                            }
+
+                            @Override
+                            public boolean canSwipeRight(int position) {
+                                return position % 2 == 0;
                             }
 
                             @Override

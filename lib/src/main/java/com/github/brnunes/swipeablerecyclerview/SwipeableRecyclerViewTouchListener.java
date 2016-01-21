@@ -113,7 +113,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
          * If a scroll listener is already assigned, the caller should still pass scroll changes through
          * to this listener.
          */
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 setEnabled(newState != RecyclerView.SCROLL_STATE_DRAGGING);
@@ -177,11 +177,11 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     }
                 }
 
-                if (mDownView != null && mAnimatingPosition != mRecyclerView.getChildPosition(mDownView)) {
+                if (mDownView != null && mAnimatingPosition != mRecyclerView.getChildLayoutPosition(mDownView)) {
                     mAlpha = mDownView.getAlpha();
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();
-                    mDownPosition = mRecyclerView.getChildPosition(mDownView);
+                    mDownPosition = mRecyclerView.getChildLayoutPosition(mDownView);
                     mSwipingLeft = mSwipeListener.canSwipeLeft(mDownPosition);
                     mSwipingRight = mSwipeListener.canSwipeRight(mDownPosition);
                     if (mSwipingLeft||mSwipingRight) {

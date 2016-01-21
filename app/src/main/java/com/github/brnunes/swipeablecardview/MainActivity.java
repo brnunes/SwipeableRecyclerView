@@ -17,7 +17,7 @@
 package com.github.brnunes.swipeablecardview;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private CardViewAdapter mAdapter;
 
     private ArrayList<String> mItems;
@@ -77,12 +77,12 @@ public class MainActivity extends ActionBarActivity {
                         new SwipeableRecyclerViewTouchListener.SwipeListener() {
                             @Override
                             public boolean canSwipeLeft(int position) {
-                                return position % 2 == 1;
+                                return true;
                             }
 
                             @Override
                             public boolean canSwipeRight(int position) {
-                                return position % 2 == 0;
+                                return true;
                             }
 
                             @Override
@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
          * @param view     the CardView touched
          * @param position the index of the item touched in the RecyclerView
          */
-        public void onCardViewTap(View view, int position);
+        void onCardViewTap(View view, int position);
 
         /**
          * Callback invoked when the Button1 of an item is touched
@@ -127,7 +127,7 @@ public class MainActivity extends ActionBarActivity {
          * @param view     the Button touched
          * @param position the index of the item touched in the RecyclerView
          */
-        public void onButton1Click(View view, int position);
+        void onButton1Click(View view, int position);
 
         /**
          * Callback invoked when the Button2 of an item is touched
@@ -135,7 +135,7 @@ public class MainActivity extends ActionBarActivity {
          * @param view     the Button touched
          * @param position the index of the item touched in the RecyclerView
          */
-        public void onButton2Click(View view, int position);
+        void onButton2Click(View view, int position);
     }
 
     /**
@@ -181,21 +181,21 @@ public class MainActivity extends ActionBarActivity {
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemTouchListener.onButton1Click(v, getPosition());
+                        onItemTouchListener.onButton1Click(v, getLayoutPosition());
                     }
                 });
 
                 button2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemTouchListener.onButton2Click(v, getPosition());
+                        onItemTouchListener.onButton2Click(v, getLayoutPosition());
                     }
                 });
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemTouchListener.onCardViewTap(v, getPosition());
+                        onItemTouchListener.onCardViewTap(v, getLayoutPosition());
                     }
                 });
             }

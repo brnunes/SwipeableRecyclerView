@@ -20,9 +20,13 @@ package com.github.brnunes.swipeablerecyclerview;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -58,7 +62,7 @@ import java.util.List;
  * listView.setOnScrollListener(touchListener.makeScrollListener());
  * </pre>
  * <p/>
- * <p>This class Requires API level 12 or later due to use of {@link
+ * <p>This class Requires API level 11 or later due to use of {@link
  * android.view.ViewPropertyAnimator}.</p>
  */
 public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTouchListener {
@@ -137,6 +141,11 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
     }
 
     @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // Do nothing.
+    }
+
+    @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent motionEvent) {
         handleTouchEvent(motionEvent);
     }
@@ -170,7 +179,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                 }
 
                 if (mDownView != null && mAnimatingPosition != mRecyclerView.getChildPosition(mDownView)) {
-                    mAlpha = mDownView.getAlpha();
+                    mAlpha = ViewCompat.getAlpha(mDownView);
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();
                     mDownPosition = mRecyclerView.getChildPosition(mDownView);
@@ -191,7 +200,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
 
                 if (mDownView != null && mSwiping) {
                     // cancel
-                    mDownView.animate()
+                    ViewCompat.animate(mDownView)
                             .translationX(0)
                             .alpha(mAlpha)
                             .setDuration(mAnimationTime)
@@ -235,19 +244,31 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     final int downPosition = mDownPosition;
                     ++mDismissAnimationRefCount;
                     mAnimatingPosition = mDownPosition;
-                    mDownView.animate()
+                    ViewCompat.animate(mDownView)
                             .translationX(dismissRight ? mViewWidth : -mViewWidth)
                             .alpha(0)
                             .setDuration(mAnimationTime)
-                            .setListener(new AnimatorListenerAdapter() {
+                            .setListener(new ViewPropertyAnimatorListener() {
                                 @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    performDismiss(downView, downPosition);
+                                public void onAnimationStart(View view) {
+                                    // Do nothing.
+                                }
+
+                                @Override
+                                public void onAnimationEnd(View view) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                                        performDismiss(downView, downPosition);
+                                    }
+                                }
+
+                                @Override
+                                public void onAnimationCancel(View view) {
+                                    // Do nothing.
                                 }
                             });
                 } else {
                     // cancel
-                    mDownView.animate()
+                    ViewCompat.animate(mDownView)
                             .translationX(0)
                             .alpha(mAlpha)
                             .setDuration(mAnimationTime)
@@ -277,8 +298,8 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                 }
 
                 if (mSwiping) {
-                    mDownView.setTranslationX(deltaX - mSwipingSlop);
-                    mDownView.setAlpha(Math.max(0f, Math.min(mAlpha,
+                    ViewCompat.setTranslationX(mDownView, deltaX - mSwipingSlop);
+                    ViewCompat.setAlpha(mDownView, Math.max(0f, Math.min(mAlpha,
                             mAlpha * (1f - Math.abs(deltaX) / mViewWidth))));
                     return true;
                 }
@@ -289,6 +310,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
         return false;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void performDismiss(final View dismissView, final int dismissPosition) {
         // Animate the dismissed list item to zero-height and fire the dismiss callback when
         // all dismissed list item animations have completed. This triggers layout on each animation

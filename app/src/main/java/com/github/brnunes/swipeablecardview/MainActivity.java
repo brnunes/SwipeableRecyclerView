@@ -114,7 +114,7 @@ public class MainActivity extends ActionBarActivity {
          * @param view     the CardView touched
          * @param position the index of the item touched in the RecyclerView
          */
-        public void onCardViewTap(View view, int position);
+        void onCardViewTap(View view, int position);
 
         /**
          * Callback invoked when the Button1 of an item is touched
@@ -122,7 +122,7 @@ public class MainActivity extends ActionBarActivity {
          * @param view     the Button touched
          * @param position the index of the item touched in the RecyclerView
          */
-        public void onButton1Click(View view, int position);
+        void onButton1Click(View view, int position);
 
         /**
          * Callback invoked when the Button2 of an item is touched
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity {
          * @param view     the Button touched
          * @param position the index of the item touched in the RecyclerView
          */
-        public void onButton2Click(View view, int position);
+        void onButton2Click(View view, int position);
     }
 
     /**

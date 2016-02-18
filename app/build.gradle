@@ -27,5 +27,5 @@ dependencies {
     compile project(':lib')
 
     // could instead use the lib from the Maven repository
-//    compile 'com.github.brnunes:swipeablerecyclerview:1.0.0'
+//    compile 'com.github.brnunes:swipeablerecyclerview:1.0.2'
 }

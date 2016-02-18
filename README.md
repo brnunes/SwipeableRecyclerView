@@ -16,10 +16,10 @@ Sample project implementation of a list of `CardView`s in a `RecyclerView` with 
         ...
         
         // already includes 'com.android.support:recyclerview-v7:21.0.3'
-        compile 'com.github.brnunes:swipeablerecyclerview:1.0.1'
+        compile 'com.github.brnunes:swipeablerecyclerview:1.0.2'
 
         // only necessary if you are using CardView
-        compile 'com.android.support:cardview-v7:21.0.3'
+        compile 'com.android.support:cardview-v7:23.1.1'
     }
     ````
 The `RecyclerView` and `CardView` widgets are part of the [v7 Support Libraries](https://developer.android.com/tools/support-library/features.html#v7).
@@ -31,7 +31,12 @@ The `RecyclerView` and `CardView` widgets are part of the [v7 Support Libraries]
             new SwipeableRecyclerViewTouchListener(mRecyclerView,
                     new SwipeableRecyclerViewTouchListener.SwipeListener() {
                         @Override
-                        public boolean canSwipe(int position) {
+                        public boolean canSwipeLeft(int position) {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean canSwipeRight(int position) {
                             return true;
                         }
 

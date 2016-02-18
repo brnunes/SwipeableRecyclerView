@@ -17,7 +17,7 @@
 package com.github.brnunes.swipeablecardview;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private CardViewAdapter mAdapter;
 
     private ArrayList<String> mItems;
@@ -76,7 +76,12 @@ public class MainActivity extends ActionBarActivity {
                 new SwipeableRecyclerViewTouchListener(recyclerView,
                         new SwipeableRecyclerViewTouchListener.SwipeListener() {
                             @Override
-                            public boolean canSwipe(int position) {
+                            public boolean canSwipeLeft(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public boolean canSwipeRight(int position) {
                                 return true;
                             }
 
@@ -176,21 +181,21 @@ public class MainActivity extends ActionBarActivity {
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemTouchListener.onButton1Click(v, getPosition());
+                        onItemTouchListener.onButton1Click(v, getLayoutPosition());
                     }
                 });
 
                 button2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemTouchListener.onButton2Click(v, getPosition());
+                        onItemTouchListener.onButton2Click(v, getLayoutPosition());
                     }
                 });
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemTouchListener.onCardViewTap(v, getPosition());
+                        onItemTouchListener.onCardViewTap(v, getLayoutPosition());
                     }
                 });
             }

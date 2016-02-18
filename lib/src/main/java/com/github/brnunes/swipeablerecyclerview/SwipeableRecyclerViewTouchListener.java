@@ -92,6 +92,9 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
     private boolean mPaused;
     private float mFinalDelta;
 
+    private boolean mSwipingLeft;
+    private boolean mSwipingRight;
+
     /**
      * Constructs a new swipe touch listener for the given {@link android.support.v7.widget.RecyclerView}
      *
@@ -114,7 +117,7 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
          * If a scroll listener is already assigned, the caller should still pass scroll changes through
          * to this listener.
          */
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 setEnabled(newState != RecyclerView.SCROLL_STATE_DRAGGING);
@@ -178,12 +181,14 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     }
                 }
 
-                if (mDownView != null && mAnimatingPosition != mRecyclerView.getChildPosition(mDownView)) {
+                if (mDownView != null && mAnimatingPosition != mRecyclerView.getChildLayoutPosition(mDownView)) {
                     mAlpha = ViewCompat.getAlpha(mDownView);
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();
-                    mDownPosition = mRecyclerView.getChildPosition(mDownView);
-                    if (mSwipeListener.canSwipe(mDownPosition)) {
+                    mDownPosition = mRecyclerView.getChildLayoutPosition(mDownView);
+                    mSwipingLeft = mSwipeListener.canSwipeLeft(mDownPosition);
+                    mSwipingRight = mSwipeListener.canSwipeRight(mDownPosition);
+                    if (mSwipingLeft||mSwipingRight) {
                         mVelocityTracker = VelocityTracker.obtain();
                         mVelocityTracker.addMovement(motionEvent);
                     } else {
@@ -297,6 +302,11 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
                 }
 
+                if(deltaX < 0 && !mSwipingLeft)
+                    mSwiping = false;
+                if(deltaX > 0 && !mSwipingRight)
+                    mSwiping = false;
+
                 if (mSwiping) {
                     ViewCompat.setTranslationX(mDownView, deltaX - mSwipingSlop);
                     ViewCompat.setAlpha(mDownView, Math.max(0f, Math.min(mAlpha,
@@ -336,10 +346,10 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
                         dismissPositions[i] = mPendingDismisses.get(i).position;
                     }
 
-                    if (mFinalDelta > 0) {
-                        mSwipeListener.onDismissedBySwipeRight(mRecyclerView, dismissPositions);
-                    } else {
+                    if (mFinalDelta < 0) {
                         mSwipeListener.onDismissedBySwipeLeft(mRecyclerView, dismissPositions);
+                    } else {
+                        mSwipeListener.onDismissedBySwipeRight(mRecyclerView, dismissPositions);
                     }
 
                     // Reset mDownPosition to avoid MotionEvent.ACTION_UP trying to start a dismiss
@@ -388,9 +398,14 @@ public class SwipeableRecyclerViewTouchListener implements RecyclerView.OnItemTo
      */
     public interface SwipeListener {
         /**
-         * Called to determine whether the given position can be swiped.
+         * Called to determine whether the given position can be swiped to the left.
          */
-        boolean canSwipe(int position);
+        boolean canSwipeLeft(int position);
+
+        /**
+         * Called to determine whether the given position can be swiped to the right.
+         */
+        boolean canSwipeRight(int position);
 
         /**
          * Called when the item has been dismissed by swiping to the left.

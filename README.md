@@ -7,7 +7,7 @@ Sample project implementation of a list of `CardView`s in a `RecyclerView` with 
 
 ![Output sample](https://raw.githubusercontent.com/brnunes/SwipeableRecyclerView/master/demo.gif)
 
-####How to use
+#### How to use
 
 - Add these Gradle dependencies to your app's module:
 

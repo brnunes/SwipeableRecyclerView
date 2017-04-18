@@ -3,7 +3,7 @@ Android SwipeableRecyclerView
 
 Based on [romannurik`s Android-SwipeToDismiss](https://github.com/romannurik/Android-SwipeToDismiss).
 
-Sample project implementation of a list of `CardView`s in a `RecyclerView` with a `TouchListener` that allows dismissing of elements by swiping the elements to the left or right.
+Sample project implementation of a single column list of `CardView`s in a `RecyclerView` with a `TouchListener` that allows dismissing of elements by swiping the elements to the left or right.
 
 ![Output sample](https://raw.githubusercontent.com/brnunes/SwipeableRecyclerView/master/demo.gif)
 
